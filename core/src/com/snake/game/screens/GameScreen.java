@@ -252,12 +252,7 @@ public class GameScreen extends BaseScreen {
     public DirectionState getDirection() {
         return direction;
     }
-
-/*    public void pause(){
-        if (state.equals(GameState.PAUSED)){
-            state = GameState.RUNNING;
-        }else state = GameState.PAUSED;
-    }*/
+    
 }
 
 

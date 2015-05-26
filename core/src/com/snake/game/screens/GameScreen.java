@@ -24,6 +24,7 @@ public class GameScreen extends BaseScreen {
 
     //Keeps track of how long its been since movement
     private float moveTime;
+    private float timeSincePause;
 
     private int snakeLength;
     private Integer score = 0;
@@ -44,11 +45,11 @@ public class GameScreen extends BaseScreen {
 
     public DirectionState direction;
 
-    /*public enum GameState {
+    public enum GameState {
         RUNNING, PAUSED
     }
 
-    public GameState state;*/
+    public GameState gameState;
 
     public GameScreen(Snake game) {
         super(game);
@@ -58,7 +59,10 @@ public class GameScreen extends BaseScreen {
     public void create() {
         direction = DirectionState.RIGHT;
 
-        /*state = GameState.RUNNING;*/
+        gameState = GameState.RUNNING;
+
+        moveTime = 0;
+        timeSincePause = 0;
 
         //creating a camera
         camera = new OrthographicCamera();
@@ -93,16 +97,42 @@ public class GameScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        moveTime += delta * 1000;
+        if (gameState.equals(GameState.RUNNING)){
+            moveTime += delta * 1000;
+        }
+        timeSincePause += delta * 1000;
 
-        font = new BitmapFont();
+        switch (gameState){
+            case RUNNING:
+                update();
+                break;
+            case PAUSED:
+                pausedUpdate();
+                break;
+        }
 
         //Setting the direction state based on the input from the keys
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) direction = DirectionState.RIGHT;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) direction = DirectionState.LEFT;
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) direction = DirectionState.UP;
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) direction = DirectionState.DOWN;
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) setDirection(DirectionState.RIGHT);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) setDirection(DirectionState.LEFT);
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) setDirection(DirectionState.UP);
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) setDirection(DirectionState.DOWN);
 
+        //Pausing and un-pausing the game
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && timeSincePause > MOVE_INCREMENT){
+            if (gameState == GameState.PAUSED){
+                gameState = GameState.RUNNING;
+                timeSincePause = 0;
+            }else{
+                gameState = GameState.PAUSED;
+                timeSincePause = 0;
+            }
+        }
+
+
+    }
+
+    private void update() {
+        font = new BitmapFont();
         //Moving the head if the required amount of time has passed
         if (moveTime > MOVE_INCREMENT) {
             // Move body sprites
@@ -118,7 +148,9 @@ public class GameScreen extends BaseScreen {
             }
 
             //Moves the head
-            move(direction);
+            if (gameState.equals(GameState.RUNNING)){
+                move(direction);
+            }
 
             //Subtracting the move time after the action was completed
             moveTime -= MOVE_INCREMENT;
@@ -174,6 +206,16 @@ public class GameScreen extends BaseScreen {
 
         batch.end();
     }
+
+    private void pausedUpdate() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 480, 480);
+        batch.begin();
+        font.draw(batch, "PAUSED", 205, 240);
+        batch.end();
+
+    }
+
 
     @Override
     public void dispose() {

@@ -1,5 +1,6 @@
 package com.snake.game.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -69,6 +70,7 @@ public class IntroScreen extends BaseScreen {
         for (GridSprite sprite : sprites) {
             sprite.draw(batch);
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) game.startGame();
 
         batch.end();
     }

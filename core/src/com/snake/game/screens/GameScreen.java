@@ -112,10 +112,10 @@ public class GameScreen extends BaseScreen {
         }
 
         //Setting the direction state based on the input from the keys
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) setDirection(DirectionState.RIGHT);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) setDirection(DirectionState.LEFT);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) setDirection(DirectionState.UP);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) setDirection(DirectionState.DOWN);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) setDirRight();
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) setDirLeft();
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) setDirUp();
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) setDirDown();
 
         //Pausing and un-pausing the game
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && timeSincePause > MOVE_INCREMENT){
@@ -245,14 +245,36 @@ public class GameScreen extends BaseScreen {
         }
     }
 
-    public void setDirection(DirectionState newDir) {
-        direction = newDir;
-    }
-
     public DirectionState getDirection() {
         return direction;
     }
-    
+
+    public void setDirRight() {
+        if (!(direction.equals(DirectionState.LEFT))){
+            direction = DirectionState.RIGHT;
+        }
+    }
+
+    public void setDirLeft() {
+        if (!(direction.equals(DirectionState.RIGHT))){
+            direction = DirectionState.LEFT;
+        }
+
+    }
+
+    public void setDirUp() {
+        if(!(direction.equals(DirectionState.DOWN))){
+            direction = DirectionState.UP;
+        }
+    }
+
+    public void setDirDown() {
+        if(!(direction.equals(DirectionState.UP))){
+            direction = DirectionState.DOWN;
+        }
+    }
+
+
 }
 
 

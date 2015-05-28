@@ -187,10 +187,8 @@ public class GameScreen extends BaseScreen {
                 snakeLength++;
             }
 
-            if (score > highScore){
-                writeToFile(score);
-                score = getHighScore();
-            }
+
+
             boolean headHit = false;
             for (GridSprite sprite : bodySprites) {
                 if (sprite.getGridX() == head.getGridX() &&
@@ -206,7 +204,10 @@ public class GameScreen extends BaseScreen {
             }
         }
 
-
+        if (score > highScore){
+            writeToFile(score);
+            highScore = getHighScore();
+        }
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -224,11 +225,10 @@ public class GameScreen extends BaseScreen {
         batch.end();
     }
 
-    private void writeToFile(int newScore) {
+    private void writeToFile(Integer newScore) {
         try {
-            PrintWriter writer = new PrintWriter("highscore.txt", "UTF-8");
-            writer.println(highScore.toString());
-            writer.flush();
+            PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter("highscore.txt", false)));
+            writer.append(newScore.toString());
             writer.close();
         } catch (IOException e) {
             System.out.println("What the dick!");

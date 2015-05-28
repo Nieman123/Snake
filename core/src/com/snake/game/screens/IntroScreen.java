@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.snake.game.GridSprite;
 import com.snake.game.Snake;
 
@@ -22,6 +23,7 @@ public class IntroScreen extends BaseScreen {
             "OOO O  O O  O O  O OOO\n";
 
     private Texture bodyTexture;
+    BitmapFont font;
     private List<GridSprite> sprites = new ArrayList<>();
 
     private OrthographicCamera camera;
@@ -63,9 +65,12 @@ public class IntroScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
 
+        font = new BitmapFont();
         camera.update();
         batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
+        font.draw(batch, "Press Enter to Play", 150, 75);
 
         for (GridSprite sprite : sprites) {
             sprite.draw(batch);

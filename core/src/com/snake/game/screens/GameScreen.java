@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.snake.game.GridSprite;
 import com.snake.game.Snake;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GameScreen extends BaseScreen {
 
@@ -21,6 +23,9 @@ public class GameScreen extends BaseScreen {
     private GridSprite cherry;
     private BitmapFont font;
 
+    private Scanner scnr;
+    private File file;
+
 
     //Keeps track of how long its been since movement
     private float moveTime;
@@ -28,10 +33,13 @@ public class GameScreen extends BaseScreen {
 
     private int snakeLength;
     private Integer score = 0;
+    private Integer highScore;
 
     //Height and width of our grid
     private int gridWidth;
     private int gridHeight;
+
+
 
     //Lists of information of where the cherry is
     private ArrayList<GridSprite> bodySprites;
@@ -58,6 +66,8 @@ public class GameScreen extends BaseScreen {
     @Override
     public void create() {
         direction = DirectionState.RIGHT;
+
+        highScore = getHighScore();
 
         gameState = GameState.RUNNING;
 
@@ -177,6 +187,10 @@ public class GameScreen extends BaseScreen {
                 snakeLength++;
             }
 
+            if (score > highScore){
+                writeToFile(score);
+                score = getHighScore();
+            }
             boolean headHit = false;
             for (GridSprite sprite : bodySprites) {
                 if (sprite.getGridX() == head.getGridX() &&
@@ -192,6 +206,8 @@ public class GameScreen extends BaseScreen {
             }
         }
 
+
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -199,12 +215,24 @@ public class GameScreen extends BaseScreen {
         //drawing the cherry, head and body
         cherry.draw(batch);
         head.draw(batch);
-        font.draw(batch, "Score: " + score.toString(), 400, 400);
+        font.draw(batch, "Score: " + score.toString(), 370, 400);
+        font.draw(batch, "Highscore: " + highScore.toString(), 370, 380);
         for (GridSprite sprite : bodySprites) {
             sprite.draw(batch);
         }
 
         batch.end();
+    }
+
+    private void writeToFile(int newScore) {
+        try {
+            PrintWriter writer = new PrintWriter("highscore.txt", "UTF-8");
+            writer.println(highScore.toString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("What the dick!");
+        }
     }
 
     private void pausedUpdate() {
@@ -214,6 +242,18 @@ public class GameScreen extends BaseScreen {
         font.draw(batch, "PAUSED", 205, 240);
         batch.end();
 
+    }
+
+    public Integer getHighScore(){
+        Integer temp = 0;
+        file = new File("highscore.txt");
+        try{
+            scnr = new Scanner(file);
+            temp = scnr.nextInt();
+        }catch (FileNotFoundException e){
+            System.out.println("What the dick!");
+        }
+        return temp;
     }
 
 
@@ -243,10 +283,6 @@ public class GameScreen extends BaseScreen {
                 head.translateY(-1);
                 break;
         }
-    }
-
-    public DirectionState getDirection() {
-        return direction;
     }
 
     public void setDirRight() {

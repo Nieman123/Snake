@@ -56,7 +56,7 @@ public class GameScreen extends BaseScreen {
     public DirectionState direction;
 
     public enum GameState {
-        RUNNING, PAUSED
+        RUNNING, PAUSED, OVER
     }
 
     public GameState gameState;
@@ -127,6 +127,8 @@ public class GameScreen extends BaseScreen {
             case PAUSED:
                 pausedUpdate();
                 break;
+            case OVER:
+                over();
         }
 
         //Setting the direction state based on the input from the keys
@@ -147,6 +149,18 @@ public class GameScreen extends BaseScreen {
         }
 
 
+    }
+
+    private void over() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 480, 480);
+        batch.begin();
+        font.draw(batch, "GAME OVER", 205, 240);
+        batch.end();
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            dispose();
+            create();
+        }
     }
 
     private void update() {
@@ -212,8 +226,7 @@ public class GameScreen extends BaseScreen {
             }
             if (headHit) {
                 score = 0;
-                dispose();
-                create();
+                gameState = GameState.OVER;
             }
         }
 
@@ -352,8 +365,6 @@ public class GameScreen extends BaseScreen {
             direction = DirectionState.DOWN;
         }
     }
-
-
 }
 
 

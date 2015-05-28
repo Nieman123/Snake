@@ -35,6 +35,8 @@ public class GameScreen extends BaseScreen {
     private Integer score = 0;
     private Integer highScore;
 
+    Boolean inSnake = false;
+
     //Height and width of our grid
     private int gridWidth;
     private int gridHeight;
@@ -92,8 +94,6 @@ public class GameScreen extends BaseScreen {
         head = new GridSprite(headTexture, gridWidth, gridHeight);
         head.setGridX(snakeLength + 1);
         head.setGridY(1);
-        cherry = new GridSprite(cherryTexture, gridWidth, gridHeight);
-        cherry.randomizePosition();
 
         bodySprites = new ArrayList<>();
         for (int i = 0; i < snakeLength; i++) {
@@ -102,6 +102,14 @@ public class GameScreen extends BaseScreen {
             sprite.setGridY(1);
             bodySprites.add(sprite);
         }
+
+        cherry = new GridSprite(cherryTexture, gridWidth, gridHeight);
+        cherry.randomizePosition();
+        while(inSnakeDetector(cherry)){
+            cherry.randomizePosition();
+        }
+
+
     }
 
     @Override
@@ -167,7 +175,12 @@ public class GameScreen extends BaseScreen {
 
             if (head.getGridX() == cherry.getGridX() &&
                     head.getGridY() == cherry.getGridY()) {
+
                 cherry.randomizePosition();
+                while(inSnakeDetector(cherry)){
+                    cherry.randomizePosition();
+                }
+
                 score += 100;
 
                 GridSprite lastBodySprite = bodySprites.get(bodySprites.size() - 1);
@@ -263,6 +276,16 @@ public class GameScreen extends BaseScreen {
         bodyTexture.dispose();
         cherryTexture.dispose();
         font.dispose();
+    }
+
+    public Boolean inSnakeDetector(GridSprite passedSprite){
+        for (GridSprite sprite : bodySprites) {
+            if (sprite.getGridX() == passedSprite.getGridX() &&
+                    sprite.getGridY() == passedSprite.getGridY()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void move(DirectionState direction){

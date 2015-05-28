@@ -285,6 +285,26 @@ public class GameScreen extends BaseScreen {
         }
     }
 
+    public void setDirection(DirectionState newdir){
+        switch (newdir){
+            case RIGHT:
+                setDirRight();
+                break;
+
+            case LEFT:
+                setDirLeft();
+                break;
+
+            case UP:
+                setDirUp();
+                break;
+
+            case DOWN:
+                setDirDown();
+                break;
+        }
+    }
+
     public void setDirRight() {
         if (!(direction.equals(DirectionState.LEFT))){
             direction = DirectionState.RIGHT;

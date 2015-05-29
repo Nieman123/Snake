@@ -169,16 +169,7 @@ public class GameScreen extends BaseScreen {
         //Moving the head if the required amount of time has passed
         if (moveTime > MOVE_INCREMENT) {
             // Move body sprites
-            for (int i = bodySprites.size() - 1; i >= 0; i--) {
-                GridSprite sprite = bodySprites.get(i), nextSprite;
-                if (i > 0) {
-                    nextSprite = bodySprites.get(i - 1);
-                } else {
-                    nextSprite = head;
-                }
-                sprite.setGridX(nextSprite.getGridX());
-                sprite.setGridY(nextSprite.getGridY());
-            }
+            moveBody();
 
             //Moves the head
             if (gameState.equals(GameState.RUNNING)){
@@ -250,6 +241,19 @@ public class GameScreen extends BaseScreen {
         }
 
         batch.end();
+    }
+
+    private void moveBody() {
+        for (int i = bodySprites.size() - 1; i >= 0; i--) {
+            GridSprite sprite = bodySprites.get(i), nextSprite;
+            if (i > 0) {
+                nextSprite = bodySprites.get(i - 1);
+            } else {
+                nextSprite = head;
+            }
+            sprite.setGridX(nextSprite.getGridX());
+            sprite.setGridY(nextSprite.getGridY());
+        }
     }
 
     private void writeToFile(Integer newScore) {

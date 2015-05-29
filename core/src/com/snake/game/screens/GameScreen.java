@@ -156,6 +156,7 @@ public class GameScreen extends BaseScreen {
         camera.setToOrtho(false, 480, 480);
         batch.begin();
         font.draw(batch, "GAME OVER", 205, 240);
+        font.draw(batch, "Press enter to try again", 180, 220);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             dispose();

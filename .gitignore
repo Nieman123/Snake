@@ -65,3 +65,4 @@ build/
 
 android/assets/highscore.txt
 android/assets/highscore.txt
+*.txt

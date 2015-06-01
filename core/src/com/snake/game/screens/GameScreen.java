@@ -179,16 +179,21 @@ public class GameScreen extends BaseScreen {
             //Subtracting the move time after the action was completed
             moveTime -= MOVE_INCREMENT;
 
+            //Remaining logic for current state of the snake
+            //Is the head in the same grid location as the cherry?
             if (head.getGridX() == cherry.getGridX() &&
                     head.getGridY() == cherry.getGridY()) {
 
+                //If so randomize position
                 cherry.randomizePosition();
                 while(inSnakeDetector(cherry)){
                     cherry.randomizePosition();
                 }
 
+                //Add to the score
                 score += 100;
 
+                //Adding a body part
                 GridSprite lastBodySprite = bodySprites.get(bodySprites.size() - 1);
                 GridSprite secondLastBodySprite = bodySprites.get(bodySprites.size() - 2);
                 GridSprite sprite = new GridSprite(bodyTexture, gridWidth, gridHeight);
@@ -207,7 +212,7 @@ public class GameScreen extends BaseScreen {
             }
 
 
-
+            //Determining if the snake has hit the wall or itself
             boolean headHit = false;
             for (GridSprite sprite : bodySprites) {
                 if (sprite.getGridX() == head.getGridX() &&
@@ -216,6 +221,7 @@ public class GameScreen extends BaseScreen {
                     break;
                 }
             }
+            //If it has we end the game
             if (headHit) {
                 score = 0;
                 gameState = GameState.OVER;

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.snake.game.GridSprite;
 import com.snake.game.Snake;
 
@@ -21,6 +22,7 @@ public class GameScreen extends BaseScreen {
     private OrthographicCamera camera;
     private GridSprite head;
     private GridSprite cherry;
+    private Sprite line;
     private BitmapFont font;
 
     private Scanner scnr;
@@ -47,6 +49,7 @@ public class GameScreen extends BaseScreen {
     private ArrayList<GridSprite> bodySprites;
     private Texture bodyTexture;
     private Texture headTexture;
+    private Texture dividerTexture;
     private Texture cherryTexture;
 
     public enum DirectionState {
@@ -78,17 +81,21 @@ public class GameScreen extends BaseScreen {
 
         //creating a camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 480, 480);
+        camera.setToOrtho(false, 480, 520);
 
         //Setting the sizes of our grid
         gridWidth = (int) (camera.viewportWidth / GRID_SIZE);
         gridHeight = (int) (camera.viewportHeight / GRID_SIZE);
+        gridHeight -= 2;
 
         //Snake and cherry textures
         snakeLength = 3;
         headTexture = new Texture("images.png");
         bodyTexture = new Texture("images.png");
+        dividerTexture = new Texture("line.png");
         cherryTexture = new Texture("cherries.png");
+
+        line = new Sprite(dividerTexture);
 
         //Initializing the cherry sprite and it's position
         head = new GridSprite(headTexture, gridWidth, gridHeight);
@@ -138,16 +145,18 @@ public class GameScreen extends BaseScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) setDirDown();
 
         //Pausing and un-pausing the game
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) && timeSincePause > MOVE_INCREMENT){
-            if (gameState == GameState.PAUSED){
-                gameState = GameState.RUNNING;
-                timeSincePause = 0;
-            }else{
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            if (gameState == GameState.RUNNING){
                 gameState = GameState.PAUSED;
                 timeSincePause = 0;
             }
         }
-
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            if (gameState == GameState.PAUSED){
+                gameState = GameState.RUNNING;
+                timeSincePause = 0;
+            }
+        }
 
     }
 
@@ -233,6 +242,8 @@ public class GameScreen extends BaseScreen {
             highScore = getHighScore();
         }
 
+        line.setPosition(0,480);
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -240,8 +251,9 @@ public class GameScreen extends BaseScreen {
         //drawing the cherry, head and body
         cherry.draw(batch);
         head.draw(batch);
-        font.draw(batch, "Score: " + score.toString(), 370, 400);
-        font.draw(batch, "Highscore: " + highScore.toString(), 370, 380);
+        line.draw(batch);
+        font.draw(batch, "Score: " + score.toString(), 400, 500);
+        font.draw(batch, "Highscore: " + highScore.toString(), 280, 500);
         for (GridSprite sprite : bodySprites) {
             sprite.draw(batch);
         }
@@ -273,8 +285,6 @@ public class GameScreen extends BaseScreen {
     }
 
     private void pausedUpdate() {
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 480, 480);
         batch.begin();
         font.draw(batch, "PAUSED", 205, 240);
         batch.end();
@@ -298,6 +308,7 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         headTexture.dispose();
         bodyTexture.dispose();
+        dividerTexture.dispose();
         cherryTexture.dispose();
         font.dispose();
     }

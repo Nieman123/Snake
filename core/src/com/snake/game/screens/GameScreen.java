@@ -396,6 +396,10 @@ public class GameScreen extends BaseScreen{
         this.stateListener = stateListener;
     }
 
+    public GameState getGameState(){
+        return gameState;
+    }
+
 }
 
 

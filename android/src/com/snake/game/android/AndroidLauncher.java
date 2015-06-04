@@ -44,6 +44,11 @@ public class AndroidLauncher extends AndroidApplication implements StateListener
             @Override
             public void onClick(View v) {
                 game.startGame();
+                Screen screen = game.getScreen();
+                if (screen instanceof GameScreen){
+                    ((GameScreen) screen).setStateListener(AndroidLauncher.this);
+                }
+
             }
         });
 
@@ -68,11 +73,7 @@ public class AndroidLauncher extends AndroidApplication implements StateListener
 
     @Override
     public void onStateChange(GameScreen.GameState state) {
-        Screen screen = game.getScreen();
-        if (screen instanceof GameScreen){
-            ((GameScreen) screen).setStateListener(AndroidLauncher.this);
-        }
-        if (((GameScreen) screen).getGameState().equals(GameScreen.GameState.RUNNING)){
+        if (state.equals(GameScreen.GameState.RUNNING)){
             startGameButton.setText("Pause");
         }else{
             startGameButton.setText("Resume");

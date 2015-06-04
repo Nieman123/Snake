@@ -18,13 +18,13 @@ public class AndroidLauncher extends AndroidApplication implements StateListener
 
     final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
     final Snake game = new Snake();
-    final View gameView = initializeForView(game, config);
+     Button startGameButton;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-
+        final View gameView = initializeForView(game, config);
 
 
         final RelativeLayout gameContainer = (RelativeLayout) findViewById(R.id.game_container);
@@ -39,7 +39,7 @@ public class AndroidLauncher extends AndroidApplication implements StateListener
             }
         });
 
-        final Button startGameButton = (Button) findViewById(R.id.start_game_button);
+        startGameButton = (Button) findViewById(R.id.start_game_button);
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +71,11 @@ public class AndroidLauncher extends AndroidApplication implements StateListener
         Screen screen = game.getScreen();
         if (screen instanceof GameScreen){
             ((GameScreen) screen).setStateListener(AndroidLauncher.this);
+        }
+        if (((GameScreen) screen).getGameState().equals(GameScreen.GameState.RUNNING)){
+            startGameButton.setText("Pause");
+        }else{
+            startGameButton.setText("Resume");
         }
     }
 

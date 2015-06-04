@@ -11,18 +11,21 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.snake.game.Snake;
+import com.snake.game.StateListener;
 import com.snake.game.screens.GameScreen;
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements StateListener{
+
+    final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+    final Snake game = new Snake();
+    final View gameView = initializeForView(game, config);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        final Snake game = new Snake();
-        final View gameView = initializeForView(game, config);
+
 
         final RelativeLayout gameContainer = (RelativeLayout) findViewById(R.id.game_container);
         gameContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -36,7 +39,7 @@ public class AndroidLauncher extends AndroidApplication {
             }
         });
 
-        Button startGameButton = (Button) findViewById(R.id.start_game_button);
+        final Button startGameButton = (Button) findViewById(R.id.start_game_button);
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +66,14 @@ public class AndroidLauncher extends AndroidApplication {
 		});*/
     }
 
+    @Override
+    public void onStateChange(GameScreen.GameState state) {
+        Screen screen = game.getScreen();
+        if (screen instanceof GameScreen){
+            ((GameScreen) screen).setStateListener(AndroidLauncher.this);
+        }
+    }
+
     class OnDirectionPressed implements View.OnTouchListener {
         private Snake game;
         private GameScreen.DirectionState direction;
@@ -80,5 +91,6 @@ public class AndroidLauncher extends AndroidApplication {
             }
             return true;
         }
+
     }
 }

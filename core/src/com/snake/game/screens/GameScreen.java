@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.snake.game.GridSprite;
 import com.snake.game.Snake;
+import com.snake.game.StateListener;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class GameScreen extends BaseScreen {
+public class GameScreen extends BaseScreen{
 
     //Grid size and movement interval
     public static final int GRID_SIZE = 20;
@@ -28,6 +29,7 @@ public class GameScreen extends BaseScreen {
     private Scanner scnr;
     private File file;
 
+    public StateListener stateListener;
 
     //Keeps track of how long its been since movement
     private float moveTime;
@@ -148,12 +150,14 @@ public class GameScreen extends BaseScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
             if (gameState == GameState.RUNNING){
                 gameState = GameState.PAUSED;
+                stateListener.onStateChange(gameState);
                 timeSincePause = 0;
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             if (gameState == GameState.PAUSED){
                 gameState = GameState.RUNNING;
+                stateListener.onStateChange(gameState);
                 timeSincePause = 0;
             }
         }
@@ -387,6 +391,11 @@ public class GameScreen extends BaseScreen {
             direction = DirectionState.DOWN;
         }
     }
+
+    public void setStateListener(StateListener stateListener){
+        this.stateListener = stateListener;
+    }
+
 }
 
 
